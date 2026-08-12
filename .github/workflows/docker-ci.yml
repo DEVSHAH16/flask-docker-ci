@@ -10,34 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Get the code from GitHub
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python
+      # ADD THIS DEBUG STEP
+      - name: Debug Secret Lengths
+        run: |
+          echo "Username length is: ${{ length(secrets.DOCKER_USERNAME) }}"
+          echo "Token length is: ${{ length(secrets.DOCKER_TOKEN) }}"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Step 3: Install dependencies and Run Tests (Continuous Integration)
-      - name: Run Tests
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pytest -v
-
-      # Step 4: Log into Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-
-      # Step 5: Build and Push the Docker Image (Continuous Delivery)
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/flask-docker-ci:latest
+      # ... keep the rest of your file exactly the same ...
