@@ -9,7 +9,6 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
     
-    # This permission is required to push to GHCR
     permissions:
       packages: write
       contents: read
@@ -29,7 +28,6 @@ jobs:
           pip install -r requirements.txt
           pytest -v
 
-      # Log in to GitHub Container Registry (No secrets needed!)
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -37,10 +35,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build and push to GHCR
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/devshah16/flask-docker-ci:latest
