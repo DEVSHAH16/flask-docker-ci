@@ -24,12 +24,15 @@ jobs:
           pip install -r requirements.txt
           pytest -v
 
-      # NEW: Using env variables is the safest way to pass secrets
+      # NUCLEAR OPTION: Strip all hidden spaces and newlines from secrets
       - name: Log in to Docker Hub
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASS: ${{ secrets.DOCKER_TOKEN }}
-        run: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+        run: |
+          CLEAN_USER=$(echo "$DOCKER_USER" | tr -d '[:space:]')
+          CLEAN_PASS=$(echo "$DOCKER_PASS" | tr -d '[:space:]')
+          echo "$CLEAN_PASS" | docker login -u "$CLEAN_USER" --password-stdin
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
